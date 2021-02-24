@@ -1,4 +1,22 @@
-﻿ответ1;
-ответ2;
-ответ3;
-ответ4;
+﻿{
+	warning: "отвечайте четко да или нет",
+	success: "Принят на работу",
+	fail: "Вы не готовы",
+	interview: [
+		{
+			message: "Привет \n привет",
+			important: false,
+			correctValue: true
+		},
+		{
+			message: "Первый вопрос",
+			important: true,
+			correctValue: false
+		},
+		{
+			message: "Второй вопрос",
+			important: false,
+			correctValue: true
+		}
+	]
+}

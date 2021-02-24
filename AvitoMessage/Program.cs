@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace AvitoMessage
 {
@@ -97,9 +98,11 @@ namespace AvitoMessage
                 clients.Add(currentClient);
             }
 
-            if (currentClient.DialogStep < Dialog.Messages.Count())
+            operations.Add(new SendMessage(driver, currentClient));
+
+            if (currentClient.DialogStep <= Dialog.template.interview.Count())
             {
-                operations.Add(new SendMessage(driver, currentClient));
+                //operations.Add(new SendMessage(driver, currentClient));
             }
             else
             {
@@ -110,6 +113,7 @@ namespace AvitoMessage
 
     public class Client
     {
+        public bool IsApproved = true;
         public int DialogStep = 0;
         public string Id { private set; get; }        
         public Client(string id)
@@ -129,26 +133,30 @@ namespace AvitoMessage
         {
         }
 
-        public static List<string> Messages { private set; get; }
+        public static DialogTemplate template;
         public int currentStep;
 
         public static void LoadTemplate()
         {
-            Messages = new List<string>();
             var path = Directory.GetCurrentDirectory() + "/dialog.txt";
             var text = File.ReadAllText(path);
-
-            var messageCol = text.Split(';');
-
-            foreach(var item in messageCol)
-            {
-                if (string.IsNullOrEmpty(item))
-                {
-                    continue;
-                }
-
-                Messages.Add(item);
-            }
+            template = JsonConvert.DeserializeObject<DialogTemplate>(text);            
         }
+    }
+
+    public class Interview
+    {
+        public string message { get; set; }
+        public bool important { get; set; }
+        public bool correctValue { get; set; }
+    }
+
+    public class DialogTemplate
+    {
+        public string warning { get; set; }
+        public string wellcome { get; set; }
+        public string success { get; set; }
+        public string fail { get; set; }
+        public List<Interview> interview { get; set; }
     }
 }
